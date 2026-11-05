@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b10">
+  <meta name="description" content="在立体拳击馆中，用摄像头出拳、闪避与防守，完成一场真正的训练赛。">
+  <title>ONE MORE ROUND · 体感拳击馆</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><span class="brand-icon">◢</span><span>ONE MORE <b>ROUND</b></span><small>体感拳击馆 · BETA 2.0</small></div>
+      <div class="top-actions"><span id="camera-pill" class="camera-pill">● 未连接摄像头</span><button id="camera-btn" class="btn btn-outline">开启体感</button><button id="sound-btn" class="btn btn-icon" aria-label="切换音效">♪</button></div>
+    </header>
+
+    <main>
+      <section class="headline"><div><p class="overline">ENTER THE RING</p><h1>站上擂台，<em>真打这一回合。</em></h1><p>看准对手破绽出拳；他反击时，侧闪、下潜或抱架防守。</p></div><div class="record"><span>个人最佳</span><strong id="best-score">0</strong><small>PTS</small></div></section>
+
+      <div class="layout">
+        <section class="game-card">
+          <div class="scorebar"><div class="fighter"><span class="tag">YOU</span><strong>挑战者</strong><div class="meter"><i id="player-health"></i></div></div><div class="round-center"><span id="round-label">训练赛</span><strong id="time">60</strong><small>秒</small></div><div class="fighter opponent"><span class="tag">SPARRING PARTNER</span><strong>拳馆教练</strong><div class="meter"><i id="opponent-health"></i></div></div></div>
+          <div class="arena" id="arena"><canvas id="game" aria-label="立体拳击擂台"></canvas><div class="arena-vignette"></div><div id="impact-flash"></div><div class="arena-overlay-hud"><div class="combo-display"><span>连击</span><strong id="combo">0</strong><small>COMBO</small></div><div class="score-display"><span>本局得分</span><strong id="score">0000</strong></div></div><div id="telegraph" class="telegraph" aria-live="polite"></div><div id="action-pop" class="action-pop" aria-live="polite"></div><div id="overlay" class="overlay"><div class="overlay-content"><span class="overline">ROUND 01 · READY?</span><h2>开始一场真正的对练</h2><p>电脑键盘可直接试玩。开启摄像头后，先保持抱架 2 秒校准，再出拳挑战教练。</p><button id="start-btn" class="btn btn-primary">进入擂台 <span>↗</span></button><small>站在镜头前约 1–2 米，保持上半身与双拳入镜</small></div></div></div>
+          <div class="fight-footer"><div><span id="mode-label">键盘 / 触屏模式</span><strong id="action-label">准备上场</strong></div><div class="round-pips"><i class="active"></i><i></i><i></i></div><button id="pause-btn" class="btn btn-outline btn-small">暂停</button></div>
+          <div class="touch-controls"><button data-action="jab">左直拳 <kbd>J</kbd></button><button data-action="cross">右直拳 <kbd>L</kbd></button><button data-action="hook">摆拳 <kbd>K</kbd></button><button data-action="dodgeLeft">左闪 <kbd>A</kbd></button><button data-action="dodgeRight">右闪 <kbd>D</kbd></button><button data-action="block">抱架 <kbd>S</kbd></button></div>
+        </section>
+
+        <aside class="sidebar">
+          <div class="panel camera-panel"><div class="panel-title"><span>体感识别</span><strong id="tracking-state">等待开启</strong></div><div class="camera-frame"><video id="camera" autoplay muted playsinline></video><canvas id="pose-overlay"></canvas><div id="camera-placeholder"><span>◎</span><p>打开摄像头<br>让每一拳都被看到</p></div></div><div class="camera-status"><div><span>左拳</span><div class="signal"><i id="left-signal"></i></div><strong id="left-status">待机</strong></div><div><span>右拳</span><div class="signal"><i id="right-signal"></i></div><strong id="right-status">待机</strong></div></div><p id="camera-hint" class="hint">点击「开启体感」，对镜头抱架完成校准。镜头画面只在本机处理。</p><button id="calibrate-btn" class="btn btn-ghost" disabled>重新校准动作</button></div>
+          <div class="panel setup-panel"><div class="panel-title"><span>比赛设置</span><strong>01 / 03</strong></div><label>难度<select id="difficulty"><option value="easy">新手 · 慢速攻防</option><option value="normal" selected>标准 · 训练对抗</option><option value="hard">挑战 · 快速反击</option></select></label><label>动作灵敏度<div class="range-row"><input id="sensitivity" type="range" min="1" max="5" value="3"><b id="sensitivity-value">3</b></div></label><p>左/右手出拳各自识别；10 连击进入「火力全开」。</p></div>
+          <div class="panel coach-panel"><div class="panel-title"><span>教练提示</span><strong>TIP</strong></div><p id="coach-tip">镜头放在胸口高度，双拳先放在脸颊前。直拳要迅速伸出，再收回抱架。</p></div>
+        </aside>
+      </div>
+
+      <section class="progress-section"><div class="section-head"><div><p class="overline">BOXING LOG</p><h2>训练档案 <small>每一拳都算成长</small></h2></div><span id="sessions-count">0 场训练</span></div><div class="progress-grid"><div class="stat-card"><span>总出拳</span><strong id="total-punches">0</strong><small>次</small></div><div class="stat-card"><span>命中率</span><strong id="accuracy">0%</strong><small>历史平均</small></div><div class="stat-card"><span>最佳连击</span><strong id="best-combo">0</strong><small>COMBO</small></div><div class="stat-card"><span>最佳段位</span><strong id="rank">拳馆新秀</strong><small>继续挑战</small></div></div><div class="skills"><div class="skill"><span>01</span><strong>基础直拳</strong><p>完成 10 次有效直拳</p><i id="skill-straight"></i></div><div class="skill"><span>02</span><strong>灵活步伐</strong><p>成功闪避 5 次攻击</p><i id="skill-dodge"></i></div><div class="skill"><span>03</span><strong>组合拳</strong><p>打出 10 连击</p><i id="skill-combo"></i></div><div class="skill"><span>04</span><strong>攻防兼备</strong><p>完成 3 场训练赛</p><i id="skill-match"></i></div></div></section>
+    </main>
+    <footer>ONE MORE ROUND · 为安全起见，留出足够的活动空间，避免靠近家具与他人。</footer>
+  </div>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
